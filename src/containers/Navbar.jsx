@@ -46,7 +46,7 @@ export default function Navbar() {
                                 <Disclosure.Panel className="flex flex-wrap w-full my-5 lg:hidden">
                                     <>
                                         {navigation.map((item, index) => (
-                                            <Link key={index} to="#" className="w-full text-center px-4 py-2 -ml-4 text-gray-500 rounded-md dark:text-gray-300 hover:text-indigo-500 focus:text-indigo-500 focus:bg-indigo-100 focus:outline-none dark:focus:bg-gray-700">
+                                            <Link key={index} to="#" className="w-full px-4 py-2 -ml-4 text-gray-500 rounded-md dark:text-gray-300 hover:text-indigo-500 focus:text-indigo-500 focus:bg-indigo-100 focus:outline-none dark:focus:bg-gray-700">
                                                 {item}
                                             </Link>
                                         ))}
