@@ -5,18 +5,17 @@ const AddTask = () => {
     const [taskTest, setTaskTest] = useState("")
 
     return (
-        <div className='p-5 w-full max-w-screen-lg mx-auto'>
-
+        <div className='p-4 w-full max-w-screen-lg mx-auto'>
             <div className='p-4 grid gap-7 lg:grid-cols-3'>
-                <div className="py-3 border bg-[#121212] rounded shadow-sm text-center">
+                <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
                     <h2 className="text-lg text-[#D83BD2]">All Tasks</h2>
                     <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">12</h1>
                 </div>
-                <div className="py-3 border bg-[#121212] rounded shadow-sm text-center">
+                <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
                     <h2 className="text-lg text-[#6AD767]">Done</h2>
                     <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">7</h1>
                 </div>
-                <div className="py-3 border bg-[#121212] rounded shadow-sm text-center">
+                <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
                     <h2 className="text-lg text-[#F44250]">Todo</h2>
                     <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">5</h1>
                 </div>
