@@ -7,20 +7,38 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import ErrorPage from './components/404';
+import AllTodos from './components/AllTodos';
+import Done from './components/Done';
+import Todo from './components/Todo';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <ErrorPage />,
+    Children: [
+      {
+        path: "all-todos",
+        element: <AllTodos />
+
+      },
+      {
+        path: 'done',
+        element: <Done />
+      },
+      {
+        path: "todo",
+        element: <Todo />
+      },
+    ]
   },
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    {/* <App /> */}
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <RouterProvider router={router} />
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -4,13 +4,16 @@ import { Link } from "react-router-dom";
 
 export default function Navbar() {
     const navigation = [
-        "All Tasks",
-        "Todo",
-        "Done",
+        { name: "All Tasks", path: "#" },
+        { name: "Todo", path: "#" },
+        { name: "Done", path: "#" },
     ];
+
+
+
     return (
-        <div className="w-full">
-            <nav className="container relative flex flex-wrap items-center justify-between p-8 mx-auto lg:justify-between border-b border-gray-200">
+        <div className="w-full border-b border-gray-200">
+            <nav className="max-w-screen-lg mx-auto relative flex flex-wrap items-center justify-between p-4 lg:justify-between">
                 {/* Logo  */}
                 <Disclosure>
                     {({ open }) => (
@@ -46,8 +49,8 @@ export default function Navbar() {
                                 <Disclosure.Panel className="flex flex-wrap w-full my-5 lg:hidden">
                                     <>
                                         {navigation.map((item, index) => (
-                                            <Link key={index} to="#" className="w-full px-4 py-2 -ml-4 text-gray-500 rounded-md dark:text-gray-300 hover:text-indigo-500 focus:text-indigo-500 focus:bg-indigo-100 focus:outline-none dark:focus:bg-gray-700">
-                                                {item}
+                                            <Link key={index} to={item.path} className="w-full px-4 py-2 -ml-4 text-gray-500 rounded-md dark:text-gray-300 hover:text-indigo-500 focus:text-indigo-500 focus:bg-indigo-100 focus:outline-none dark:focus:bg-gray-700">
+                                                {item.name}
                                             </Link>
                                         ))}
                                     </>
@@ -62,8 +65,8 @@ export default function Navbar() {
                     <ul className="items-center justify-end flex-1 pt-6 lg:pt-0 list-reset lg:flex">
                         {navigation.map((menu, index) => (
                             <li className="mr-3 nav__item" key={index}>
-                                <Link to="#" className="inline-block px-4 py-2 text-lg font-normal text-gray-800 no-underline rounded-md dark:text-gray-200 hover:text-indigo-500 focus:text-indigo-500 focus:bg-indigo-100 focus:outline-none">
-                                    {menu}
+                                <Link to={menu.path.toString()} className="inline-block p-2 font-normal text-gray-800 no-underline rounded-md dark:text-gray-200 hover:text-indigo-500 focus:text-indigo-500 focus:bg-indigo-100 focus:outline-none">
+                                    {menu.name}
                                 </Link>
                             </li>
                         ))}
