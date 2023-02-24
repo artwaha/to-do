@@ -1,13 +1,31 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useContext, useEffect, useState } from 'react'
+import { TodoContext } from '../containers/TodoContextProvider'
 import TodoItem from './TodoItem'
 
 const Todo = () => {
+  const { userId } = useContext(TodoContext)
+  const [todoTasks, setTodoTasks] = useState([])
+
+  useEffect(() => {
+    const fetchData = async (params) => {
+      try {
+        const response = await axios.post('http://localhost:3001/tasks/todo-tasks', { userId })
+        setTodoTasks(response.data)
+        // console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData()
+  }, [userId])
   return (
     <div className='p-5 w-full max-w-screen-lg mx-auto'>
-      <TodoItem taskText="Task 7" />
-      <TodoItem taskText="Task 8" />
-      <TodoItem taskText="Task 9" />
-      <TodoItem taskText="Task 10" />
+      {
+        todoTasks.map((task, index) => {
+          return <TodoItem key={index} task={task} />
+        })
+      }
     </div>
   )
 }
