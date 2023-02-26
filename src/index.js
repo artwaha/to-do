@@ -11,6 +11,7 @@ import ErrorPage from './components/404';
 import AllTodos from './components/AllTodos';
 import Done from './components/Done';
 import Todo from './components/Todo';
+import TaskDetails from './components/TaskDetails';
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "all-todos",
+        index: true,
         element: <AllTodos />
 
       },
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "todo",
         element: <Todo />
+      },
+      {
+        path: "tasks/:taskId",
+        element: <TaskDetails />
       },
     ]
   },

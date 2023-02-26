@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function Navbar() {
     const navigation = [
-        { name: "All Tasks", path: "all-todos" },
+        { name: "All Tasks", path: "/" },
         { name: "Todo", path: "todo" },
         { name: "Done", path: "done" },
     ];
