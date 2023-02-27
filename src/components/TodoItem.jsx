@@ -1,5 +1,5 @@
 import React from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -13,7 +13,7 @@ const TodoItem = ({ task }) => {
 
     const handleView = (e) => {
         e.preventDefault();
-        navigate(`tasks/${task._id}`)
+        navigate(`/tasks/${task._id}`)
     }
 
     const handleCheckBox = (e) => {

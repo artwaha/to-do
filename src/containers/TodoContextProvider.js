@@ -6,6 +6,7 @@ const TodoContextProvider = ({ children }) => {
 
     const [userId, setUserId] = useState("63f7c47c595aab4eb0165135")
     const [tasks, setTasks] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     const updateUserId = (id) => {
         setUserId(id)
@@ -15,11 +16,17 @@ const TodoContextProvider = ({ children }) => {
         setTasks(newTasks)
     }
 
+    const updateIsLoading = (state) => {
+        setIsLoading(state)
+    }
+
     const contextValues = {
         userId,
         tasks,
+        isLoading,
         updateUserId,
-        updateTasks
+        updateTasks,
+        updateIsLoading
     }
 
     return (

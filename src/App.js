@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import AddTask from "./components/AddTask";
+import TasksDashboard from "./components/TasksDashboard";
 import Footer from "./containers/Footer";
 import Navbar from "./containers/Navbar";
 import TodoContextProvider from "./containers/TodoContextProvider";
@@ -9,7 +9,7 @@ function App() {
     <TodoContextProvider>
       <div className='flex flex-col min-h-screen'>
         <Navbar />
-        <AddTask />
+        <TasksDashboard />
         <main className='flex-1 flex'>
           <Outlet />
         </main>

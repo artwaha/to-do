@@ -8,25 +8,28 @@ const AllTodos = () => {
   const { userId } = useContext(TodoContext)
 
   const [allTasks, setAllTasks] = useState([])
+  const [loadingAllTasks, setLoadingAllTasks] = useState(true)
 
   useEffect(() => {
-    const fetchData = async (params) => {
+    const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:3001/tasks', { userId })
+        const response = await axios.post('/tasks', { userId })
+        setLoadingAllTasks(false)
         setAllTasks(response.data)
-        // console.log(response.data);
       } catch (error) {
+        setLoadingAllTasks(true)
         console.log(error);
       }
     }
     fetchData()
   }, [userId])
 
-
   return (
     <div className='p-5 w-full max-w-screen-lg mx-auto'>
-      {
-        allTasks.map((task, index) => {
+      {loadingAllTasks ? <div className='p-4 flex flex-col items-center justify-center'>
+        <h1>Loading...</h1>
+      </div>
+        : allTasks.map((task, index) => {
           return <TodoItem key={index} task={task} />
         })
       }

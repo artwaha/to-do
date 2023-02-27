@@ -14,7 +14,7 @@ const TaskDetails = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/tasks/${taskId}`)
+                const response = await axios.get(`/tasks/${taskId}`)
                 setTask(response.data)
             } catch (error) {
                 console.log(error);
@@ -25,7 +25,7 @@ const TaskDetails = () => {
 
     const refresh = async () => {
         try {
-            const response = await axios.get(`http://localhost:3001/tasks/${taskId}`)
+            const response = await axios.get(`/tasks/${taskId}`)
             setTask(response.data)
         } catch (error) {
             console.log(error);
@@ -35,7 +35,7 @@ const TaskDetails = () => {
     const handleEdit = () => {
         setShowEdit(false);
         setEdit(true);
-        console.log(itemsToDelete);
+        // console.log(itemsToDelete);
     }
 
     const handleSave = () => {
@@ -67,11 +67,11 @@ const TaskDetails = () => {
             {
                 Object.keys(task).length === 0
                     ? <div>
-                        <h1>Loading...</h1>
+                        <h1>Loading task details...</h1>
                         <button className='px-3 py-2 text-white bg-[#121212] rounded-md' onClick={refresh}>Refresh</button>
                     </div>
                     : <>
-                        <div className='border-b border-gray-500 mb-2 p-2 flex'>
+                        <div className='mb-2 p-2 flex'>
                             <div className='ml-auto flex items-center justify-center'>
                                 {showEdit && <button onClick={handleEdit} className='flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
@@ -92,37 +92,46 @@ const TaskDetails = () => {
                         {
                             !edit ?
                                 <form >
-                                    <h1 className='text-gray-600 text-3xl font-extrabold font-mono mb-3'>{task.title}</h1>
-                                    <h2 className='mr-3'>{task.description}</h2>
-                                    <h2>Status: <span>{task.isCompleted ? "Done" : "Pending"}</span></h2>
-                                    <h2>Collaborators:</h2>
-                                    <ul className="pl-2">
+                                    <h1 >
+                                        <span className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Title: </span>
+                                        <span className='font-light mb-2'>{task.title}</span>
+                                    </h1>
+                                    <h2 className='mr-3'>
+                                        <span className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Description:</span>
+                                        <span >{task.description}</span>
+                                    </h2>
+                                    <h2>
+                                        <span className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Status:</span>
+                                        <span>{task.isCompleted ? "Done" : "Pending"}</span>
+                                    </h2>
+                                    <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Collaborators:</h2>
+                                    <ol className="list-decimal list-inside ml-4">
                                         {
-                                            task.collaborators.map((collaborator, index) => <h3 key={index}>{collaborator.name}</h3>)
+                                            task.collaborators.map((collaborator, index) => <li className='py-1' key={index}>{collaborator.name}</li>)
                                         }
-                                    </ul>
+                                    </ol>
                                 </form>
                                 : <form className='flex flex-col'>
-                                    <div className='flex items-center mt-3'>
-                                        <h2>Title:</h2>
-                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md' onChange={e => console.log(e.target.value)} defaultValue={task.title} />
+                                    <div className='flex items-center mt-2'>
+                                        <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Title:</h2>
+                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full' onChange={e => console.log(e.target.value)} defaultValue={task.title} />
                                     </div>
-                                    <div className='flex items-center mt-3'>
-                                        <h2>Description:</h2>
-                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md' onChange={e => console.log(e.target.value)} defaultValue={task.description} />
+                                    <div className='flex items-center mt-2'>
+                                        <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Description:</h2>
+                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full' onChange={e => console.log(e.target.value)} defaultValue={task.description} />
                                     </div>
-                                    <div className='flex items-center mt-3'>
-                                        <h2>Status:</h2>
+                                    <div className='flex items-center mt-2'>
+                                        <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Status:</h2>
                                         <select className='ml-2 px-1 text-sm py-1 border border-gray-300 rounded-md' onChange={e => console.log(e.target.value)} defaultValue={task.isCompleted.toString()}>
                                             <option value="true">Done</option>
                                             <option value="false">Pending</option>
                                         </select>
                                     </div>
-                                    <h2 className='mt-3'>Collaborators:</h2>
-                                    <ol className="pl-2">
+                                    <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans mt-2`}>Collaborators:</h2>
+                                    <ol className="list-decimal list-inside ml-4">
                                         {
                                             task.collaborators.map((collaborator, index) => {
-                                                return <div key={index} className='flex items-center mt-2'>
+                                                return <li key={index} className='flex items-center mt-2 py-1'>
                                                     <h3 className={strikedThroughIndexes.includes(index) ? 'line-through' : ''}>{collaborator.name}</h3>
                                                     {!disabledIndexes.includes(index) && <button
                                                         // disabled={disabledIndexes.includes(index)}
@@ -143,7 +152,7 @@ const TaskDetails = () => {
                                                             </svg>
                                                         </button>
                                                     )}
-                                                </div>
+                                                </li>
                                             })
                                         }
                                     </ol>

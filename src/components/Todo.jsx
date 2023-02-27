@@ -6,14 +6,16 @@ import TodoItem from './TodoItem'
 const Todo = () => {
   const { userId } = useContext(TodoContext)
   const [todoTasks, setTodoTasks] = useState([])
+  const [isLoadingTodoTasks, setIsLoadingTodoTasks] = useState(true)
 
   useEffect(() => {
     const fetchData = async (params) => {
       try {
-        const response = await axios.post('http://localhost:3001/tasks/todo-tasks', { userId })
+        const response = await axios.post('/tasks/todo-tasks', { userId })
+        setIsLoadingTodoTasks(false)
         setTodoTasks(response.data)
-        // console.log(response.data);
       } catch (error) {
+        setIsLoadingTodoTasks(true)
         console.log(error);
       }
     }
@@ -21,8 +23,10 @@ const Todo = () => {
   }, [userId])
   return (
     <div className='p-5 w-full max-w-screen-lg mx-auto'>
-      {
-        todoTasks.map((task, index) => {
+      {isLoadingTodoTasks ? <div className='p-4 flex flex-col items-center justify-center'>
+        <h1>Loading..</h1>
+      </div>
+        : todoTasks.map((task, index) => {
           return <TodoItem key={index} task={task} />
         })
       }
