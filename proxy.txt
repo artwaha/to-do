@@ -1,2 +1,3 @@
 "proxy-server": "https://uninterested-ray-hoodie.cyclic.app",
 "proxy": "http://localhost:3001",
+"start-nodemon": "nodemon ./bin/www",

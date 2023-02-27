@@ -1,8 +1,11 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { TodoContext } from '../containers/TodoContextProvider';
+
 
 const TaskDetails = () => {
+    const { userId } = useContext(TodoContext)
     let { taskId } = useParams();
     const [task, setTask] = useState({})
     const [edit, setEdit] = useState(false)
@@ -10,12 +13,20 @@ const TaskDetails = () => {
     const [itemsToDelete, setItemsToDelete] = useState([]);
     const [strikedThroughIndexes, setStrikedThroughIndexes] = useState([]);
     const [disabledIndexes, setDisabledIndexes] = useState([]);
+    const [updatedTask, setUpdatedTask] = useState({
+        title: '',
+        description: '',
+        isCompleted: '',
+        owner: userId,
+    })
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`/tasks/${taskId}`)
                 setTask(response.data)
+                // console.log(response.data);
             } catch (error) {
                 console.log(error);
             }
@@ -35,13 +46,23 @@ const TaskDetails = () => {
     const handleEdit = () => {
         setShowEdit(false);
         setEdit(true);
-        // console.log(itemsToDelete);
     }
 
-    const handleSave = () => {
-        refresh();
-        setEdit(false);
-        setShowEdit(true)
+    const handleSave = async () => {
+        try {
+            const response = await axios.patch(`/tasks/${taskId}`, updatedTask)
+            if (response.status === 200) {
+                refresh();
+                setEdit(false);
+                setShowEdit(true)
+                // alert('Saved')
+            }
+            // const updatedCollaborators =  task.collaborators.filter(collaborator => !itemsToDelete.includes(collaborator._id)).map(collaborator => collaborator._id);
+            // console.log(updatedCollaborators);
+            // console.log(updatedTask);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const handleRemoveCollaborator = (index, collaborator) => {
@@ -53,7 +74,6 @@ const TaskDetails = () => {
             setStrikedThroughIndexes([...strikedThroughIndexes, index]);
             setDisabledIndexes([...disabledIndexes, index]);
         }
-        setItemsToDelete([...itemsToDelete, collaborator._id]);
     }
 
     const handleUndo = (index, collaborator) => {
@@ -73,7 +93,7 @@ const TaskDetails = () => {
                     : <>
                         <div className='mb-2 p-2 flex'>
                             <div className='ml-auto flex items-center justify-center'>
-                                {showEdit && <button onClick={handleEdit} className='flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md'>
+                                {showEdit && <button onClick={handleEdit} className='flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
@@ -93,41 +113,50 @@ const TaskDetails = () => {
                             !edit ?
                                 <form >
                                     <h1 >
-                                        <span className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Title: </span>
+                                        <span className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Title: </span>
                                         <span className='font-light mb-2'>{task.title}</span>
                                     </h1>
                                     <h2 className='mr-3'>
-                                        <span className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Description:</span>
+                                        <span className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Description:</span>
                                         <span >{task.description}</span>
                                     </h2>
                                     <h2>
-                                        <span className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Status:</span>
+                                        <span className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Status:</span>
                                         <span>{task.isCompleted ? "Done" : "Pending"}</span>
                                     </h2>
-                                    <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Collaborators:</h2>
+                                    <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Collaborators:</h2>
                                     <ol className="list-decimal list-inside ml-4">
                                         {
                                             task.collaborators.map((collaborator, index) => <li className='py-1' key={index}>{collaborator.name}</li>)
                                         }
                                     </ol>
+                                    <div className='flex items-center mt-4 text-sm'>
+                                        <input type="email" className='px-2 py-1 text-sm border border-gray-300 rounded-md' onChange={e => console.log(e.target.value)} placeholder="Enter email.." />
+                                        <button onClick={handleEdit} className='flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                            </svg>
+                                            <span className='ml-1'>Invite</span>
+                                        </button>
+                                    </div>
                                 </form>
                                 : <form className='flex flex-col'>
                                     <div className='flex items-center mt-2'>
-                                        <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Title:</h2>
-                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full' onChange={e => console.log(e.target.value)} defaultValue={task.title} />
+                                        <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Title:</h2>
+                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full' onChange={e => setUpdatedTask({ ...updatedTask, title: e.target.value })} defaultValue={task.title} />
                                     </div>
                                     <div className='flex items-center mt-2'>
-                                        <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Description:</h2>
-                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full' onChange={e => console.log(e.target.value)} defaultValue={task.description} />
+                                        <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Description:</h2>
+                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full' onChange={e => setUpdatedTask({ ...updatedTask, description: e.target.value })} defaultValue={task.description} />
                                     </div>
                                     <div className='flex items-center mt-2'>
-                                        <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans`}>Status:</h2>
-                                        <select className='ml-2 px-1 text-sm py-1 border border-gray-300 rounded-md' onChange={e => console.log(e.target.value)} defaultValue={task.isCompleted.toString()}>
+                                        <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Status:</h2>
+                                        <select className='ml-2 px-1 text-sm py-1 border border-gray-300 rounded-md' onChange={e => setUpdatedTask({ ...updatedTask, isCompleted: e.target.value })} defaultValue={task.isCompleted.toString()}>
                                             <option value="true">Done</option>
                                             <option value="false">Pending</option>
                                         </select>
                                     </div>
-                                    <h2 className={`${task.isCompleted ? 'text-lg text-[#6AD767]' : 'text-[#F44250]'} mr-2 font-sans mt-2`}>Collaborators:</h2>
+                                    <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans mt-2`}>Collaborators:</h2>
                                     <ol className="list-decimal list-inside ml-4">
                                         {
                                             task.collaborators.map((collaborator, index) => {
@@ -156,6 +185,15 @@ const TaskDetails = () => {
                                             })
                                         }
                                     </ol>
+                                    <div className='flex items-center mt-4 text-sm'>
+                                        <input type="email" className='px-2 py-1 text-sm border border-gray-300 rounded-md' onChange={e => console.log(e.target.value)} placeholder="Enter email.." />
+                                        <button onClick={handleEdit} className='flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                            </svg>
+                                            <span className='ml-1'>Invite</span>
+                                        </button>
+                                    </div>
                                 </form>
                         }
 
