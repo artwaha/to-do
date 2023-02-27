@@ -2,7 +2,6 @@
   "name": "to-do",
   "version": "0.1.0",
   "private": true,
-  "proxy-local": "http://localhost:3001",
   "proxy": "https://uninterested-ray-hoodie.cyclic.app",
   "dependencies": {
     "@headlessui/react": "^1.7.11",

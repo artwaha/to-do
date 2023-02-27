@@ -1,0 +1,2 @@
+"proxy-server": "https://uninterested-ray-hoodie.cyclic.app",
+"proxy": "http://localhost:3001",
