@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useContext, useEffect, useState, } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { TodoContext } from '../containers/TodoContextProvider'
 
 const TasksDashboard = () => {

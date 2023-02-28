@@ -6,7 +6,7 @@ import TodoItem from './TodoItem'
 
 
 const AllTodos = () => {
-  const { userId } = useContext(TodoContext)
+  const { userId, updateIsLoading } = useContext(TodoContext)
 
   const [allTasks, setAllTasks] = useState([])
   const [loadingAllTasks, setLoadingAllTasks] = useState(true)
@@ -23,7 +23,7 @@ const AllTodos = () => {
       }
     }
     fetchData()
-  }, [userId])
+  }, [setAllTasks, updateIsLoading, userId])
 
   return (
     <div className='p-5 w-full max-w-screen-lg mx-auto'>

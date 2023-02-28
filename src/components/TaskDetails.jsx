@@ -1,11 +1,10 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { TodoContext } from '../containers/TodoContextProvider';
 
-
 const TaskDetails = () => {
-    const { userId } = useContext(TodoContext)
+    const { userId, updateIsLoading } = useContext(TodoContext)
     let { taskId } = useParams();
     const [task, setTask] = useState({})
     const [edit, setEdit] = useState(false)
@@ -13,11 +12,14 @@ const TaskDetails = () => {
     const [itemsToDelete, setItemsToDelete] = useState([]);
     const [strikedThroughIndexes, setStrikedThroughIndexes] = useState([]);
     const [disabledIndexes, setDisabledIndexes] = useState([]);
+    const navigate = useNavigate()
+
     const [updatedTask, setUpdatedTask] = useState({
         title: '',
         description: '',
-        isCompleted: '',
+        isCompleted: false,
         owner: userId,
+        collaborators: []
     })
 
 
@@ -48,6 +50,14 @@ const TaskDetails = () => {
         setEdit(true);
     }
 
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setUpdatedTask({
+            ...updatedTask,
+            [name]: value,
+        });
+    };
+
     const handleSave = async () => {
         try {
             const response = await axios.patch(`/tasks/${taskId}`, updatedTask)
@@ -57,9 +67,6 @@ const TaskDetails = () => {
                 setShowEdit(true)
                 // alert('Saved')
             }
-            // const updatedCollaborators =  task.collaborators.filter(collaborator => !itemsToDelete.includes(collaborator._id)).map(collaborator => collaborator._id);
-            // console.log(updatedCollaborators);
-            // console.log(updatedTask);
         } catch (error) {
             console.log(error);
         }
@@ -74,12 +81,29 @@ const TaskDetails = () => {
             setStrikedThroughIndexes([...strikedThroughIndexes, index]);
             setDisabledIndexes([...disabledIndexes, index]);
         }
+
+        setUpdatedTask({ ...updatedTask, collaborators: [...itemsToDelete, collaborator._id] })
+        setItemsToDelete([...itemsToDelete, collaborator._id]);
     }
 
     const handleUndo = (index, collaborator) => {
         setStrikedThroughIndexes(strikedThroughIndexes.filter(i => i !== index));
-        setItemsToDelete(itemsToDelete.filter(id => id !== collaborator._id));
+        let items = itemsToDelete.filter(id => id !== collaborator._id)
+        setUpdatedTask({ ...updatedTask, collaborators: items })
+        setItemsToDelete(items);
         setDisabledIndexes(disabledIndexes.filter(i => i !== index));
+    }
+
+    const handleDelete = async (e) => {
+        e.preventDefault()
+        updateIsLoading(true)
+        const response = await axios.delete(`/tasks/${taskId}`)
+        if (response.status === 200) {
+            updateIsLoading(false)
+            navigate(`/`)
+        } else {
+            alert("Unable to Delete Task")
+        }
     }
 
     return (
@@ -93,6 +117,12 @@ const TaskDetails = () => {
                     : <>
                         <div className='mb-2 p-2 flex'>
                             <div className='ml-auto flex items-center justify-center'>
+                                <button className='flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2' onClick={handleDelete}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                                        <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
+                                    </svg>
+                                    <span className='ml-1'>delete</span>
+                                </button>
                                 {showEdit && <button onClick={handleEdit} className='flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
@@ -143,17 +173,31 @@ const TaskDetails = () => {
                                 : <form className='flex flex-col'>
                                     <div className='flex items-center mt-2'>
                                         <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Title:</h2>
-                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full' onChange={e => setUpdatedTask({ ...updatedTask, title: e.target.value })} defaultValue={task.title} />
+                                        <input
+                                            type="text"
+                                            name='title'
+                                            className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full'
+                                            onChange={handleInputChange}
+                                            defaultValue={task.title} />
                                     </div>
                                     <div className='flex items-center mt-2'>
                                         <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Description:</h2>
-                                        <input type="text" className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full' onChange={e => setUpdatedTask({ ...updatedTask, description: e.target.value })} defaultValue={task.description} />
+                                        <input
+                                            type="text"
+                                            name='description'
+                                            className='ml-2 px-2 py-1 text-sm border border-gray-300 rounded-md w-full'
+                                            onChange={handleInputChange}
+                                            defaultValue={task.description} />
                                     </div>
                                     <div className='flex items-center mt-2'>
                                         <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans`}>Status:</h2>
-                                        <select className='ml-2 px-1 text-sm py-1 border border-gray-300 rounded-md' onChange={e => setUpdatedTask({ ...updatedTask, isCompleted: e.target.value })} defaultValue={task.isCompleted.toString()}>
-                                            <option value="true">Done</option>
-                                            <option value="false">Pending</option>
+                                        <select
+                                            className='ml-2 px-1 text-sm py-1 border border-gray-300 rounded-md'
+                                            onChange={handleInputChange}
+                                            name="isCompleted"
+                                            defaultValue={task.isCompleted}>
+                                            <option value={true}>Done</option>
+                                            <option value={false}>Pending</option>
                                         </select>
                                     </div>
                                     <h2 className={`${task.isCompleted ? 'text-lg text-green-700' : 'text-[#F44250]'} mr-2 font-sans mt-2`}>Collaborators:</h2>
