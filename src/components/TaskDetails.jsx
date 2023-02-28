@@ -112,7 +112,6 @@ const TaskDetails = () => {
                 Object.keys(task).length === 0
                     ? <div>
                         <h1>Loading task details...</h1>
-                        <button className='px-3 py-2 text-white bg-[#121212] rounded-md' onClick={refresh}>Refresh</button>
                     </div>
                     : <>
                         <div className='mb-2 p-2 flex'>

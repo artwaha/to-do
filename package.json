@@ -41,5 +41,5 @@
   "devDependencies": {
     "tailwindcss": "^3.2.6"
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "https://abdul-razak.cyclic.app"
 }
