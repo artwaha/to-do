@@ -3,8 +3,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { TodoContext } from '../containers/TodoContextProvider'
 import TodoItem from './TodoItem'
 
-
-
 const AllTodos = () => {
   const { userId, updateIsLoading } = useContext(TodoContext)
 

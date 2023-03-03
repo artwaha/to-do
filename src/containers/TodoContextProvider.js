@@ -1,31 +1,33 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useCallback, useState } from 'react'
 
 export const TodoContext = createContext()
 
 const TodoContextProvider = ({ children }) => {
 
     const [userId, setUserId] = useState("63f7c47c595aab4eb0165135")
-    const [tasks, setTasks] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
-    const updateUserId = (id) => {
+    // const updateUserId = (id) => {
+    //     setUserId(id)
+    // }
+
+    const updateUserId = useCallback((id) => {
         setUserId(id)
-    }
+    }, [],)
 
-    const updateTasks = (newTasks) => {
-        setTasks(newTasks)
-    }
 
-    const updateIsLoading = (state) => {
-        setIsLoading(state)
-    }
+    const updateIsLoading = useCallback((value) => {
+        setIsLoading(value);
+    }, []);
+
+    // const updateIsLoading = (state) => {
+    //     setIsLoading(state)
+    // }
 
     const contextValues = {
         userId,
-        tasks,
         isLoading,
         updateUserId,
-        updateTasks,
         updateIsLoading
     }
 

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 const TodoItem = ({ task }) => {
     const navigate = useNavigate();
-    // const { taskId } = useParams()
 
     const handleView = (e) => {
         e.preventDefault();
@@ -16,7 +15,7 @@ const TodoItem = ({ task }) => {
 
     return (
         <form action="" className='py-2 mb-2 px-4 flex justify-between items-center border border-gray-300 rounded-md'>
-            <input onChange={handleCheckBox} type="checkbox" name="" id="" checked={task.isCompleted} />
+            <input onChange={handleCheckBox} type="checkbox" name="" id="" defaultChecked={task.isCompleted} />
             <p className='text-[#20232A] font-mono font-extrabold'>{task.title}</p>
             <div className='flex justify-center items-center'>
                 <button onClick={handleView}>

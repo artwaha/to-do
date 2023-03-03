@@ -22,7 +22,7 @@ const TaskDetails = () => {
         collaborators: []
     })
 
-
+    // Fetch Task Details
     useEffect(() => {
         const fetchData = async () => {
             try {

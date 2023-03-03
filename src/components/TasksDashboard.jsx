@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { TodoContext } from '../containers/TodoContextProvider'
 
 const TasksDashboard = () => {
-    const { tasks, userId, updateTasks, isLoading, updateIsLoading } = useContext(TodoContext)
+    const { userId, isLoading, updateIsLoading } = useContext(TodoContext)
     const [done, setDone] = useState(0)
     const [todo, setTodo] = useState(0)
     const [allTasks, setAllTasks] = useState(0)
@@ -17,35 +17,28 @@ const TasksDashboard = () => {
                 setDone(response.data.done)
                 setTodo(response.data.todo)
                 updateIsLoading(false)
-                // console.log("Running SUccess!");
+                console.log("Success");
             } catch (error) {
                 console.log(error);
                 updateIsLoading(true)
-                console.log("Running Failure!");
+                console.log("is Loading(Failure): ", "isLoading");
             }
         }
-
-
         fetchData();
-
-        // return () => {
-        //     updateIsLoading()
-        // }
-
-    }, [tasks, updateIsLoading, userId])
+    }, [updateIsLoading, userId, isLoading])
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newTask = {
-            "title": taskTitle,
-            "owner": userId,
-        }
         try {
-            const response = await axios.post('/tasks/new-task', { newTask, userId });
-            updateTasks(response.data)
+            await axios.post('/tasks/new-task', {
+                "owner": userId,
+                "title": taskTitle,
+            });
+            updateIsLoading(true)
         } catch (error) {
             console.log(error);
+            // updateIsLoading(false)
         }
     }
 
