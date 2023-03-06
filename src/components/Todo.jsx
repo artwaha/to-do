@@ -24,7 +24,7 @@ const Todo = () => {
   return (
     <div className='p-5 w-full max-w-screen-lg mx-auto'>
       {isLoadingTodoTasks ? <div className='p-4 flex flex-col items-center justify-center'>
-        <h1>Loading..</h1>
+        <h1>Loading todo tasks..</h1>
       </div>
         : todoTasks.map((task, index) => {
           return <TodoItem key={index} task={task} />

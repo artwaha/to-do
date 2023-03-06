@@ -21,7 +21,6 @@ const TaskDetails = () => {
         owner: userId,
         collaborators: []
     })
-
     // Fetch Task Details
     useEffect(() => {
         const fetchData = async () => {
@@ -35,15 +34,6 @@ const TaskDetails = () => {
         }
         fetchData()
     }, [taskId])
-
-    const refresh = async () => {
-        try {
-            const response = await axios.get(`/tasks/${taskId}`)
-            setTask(response.data)
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     const handleEdit = () => {
         setShowEdit(false);
@@ -62,12 +52,13 @@ const TaskDetails = () => {
         try {
             const response = await axios.patch(`/tasks/${taskId}`, updatedTask)
             if (response.status === 200) {
-                refresh();
                 setEdit(false);
                 setShowEdit(true)
-                // alert('Saved')
+                navigate(`/`)
+                alert('Saved')
             }
         } catch (error) {
+            alert(`${error.response.data.message} -Unable to Save`)
             console.log(error);
         }
     }

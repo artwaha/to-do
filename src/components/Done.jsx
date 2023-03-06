@@ -24,7 +24,7 @@ const Done = () => {
   return (
     <div className='p-5 w-full max-w-screen-lg mx-auto'>
       {loadingDoneTasks ? <div className='p-4 flex flex-col items-center justify-center'>
-        <h1>Loading...</h1>
+        <h1>Loading done tasks...</h1>
       </div>
         : doneTasks.map((task, index) => {
           return <TodoItem key={index} task={task} />

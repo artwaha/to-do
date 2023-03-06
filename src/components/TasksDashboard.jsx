@@ -1,5 +1,6 @@
 import axios from 'axios'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { TodoContext } from '../containers/TodoContextProvider'
 
 const TasksDashboard = () => {
@@ -8,37 +9,44 @@ const TasksDashboard = () => {
     const [todo, setTodo] = useState(0)
     const [allTasks, setAllTasks] = useState(0)
     const [taskTitle, setTaskTitle] = useState("")
+    const navigate = useNavigate()
+
+    const fetchData = useCallback(async () => {
+        try {
+            const response = await axios.post('/tasks/count-tasks', { userId });
+            setAllTasks(response.data.tasks);
+            setDone(response.data.done);
+            setTodo(response.data.todo);
+            updateIsLoading(false);
+            console.log("Success");
+        } catch (error) {
+            console.log(error);
+            updateIsLoading(true);
+            console.log("is Loading(Failure): ", "isLoading");
+        }
+    }, [updateIsLoading, userId]);
+
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.post('/tasks/count-tasks', { userId })
-                setAllTasks(response.data.tasks)
-                setDone(response.data.done)
-                setTodo(response.data.todo)
-                updateIsLoading(false)
-                console.log("Success");
-            } catch (error) {
-                console.log(error);
-                updateIsLoading(true)
-                console.log("is Loading(Failure): ", "isLoading");
-            }
-        }
         fetchData();
-    }, [updateIsLoading, userId, isLoading])
+    }, [fetchData])
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/tasks/new-task', {
+            // on slow connections, to show that the updates are loading
+            updateIsLoading(true)
+            const response = await axios.post('/tasks/new-task', {
                 "owner": userId,
                 "title": taskTitle,
             });
-            updateIsLoading(true)
+            console.log(response);
+            fetchData()
+            navigate(`/tasks/${response.data._id}`)
+            updateIsLoading(false)
         } catch (error) {
-            console.log(error);
-            // updateIsLoading(false)
+            alert(`${error.response.data.message} - Unable to Add new Task`)
         }
     }
 
@@ -46,7 +54,7 @@ const TasksDashboard = () => {
         <div className='p-4 w-full max-w-screen-lg mx-auto border-b border-gray-500'>
             {
                 isLoading ? <div className='p-4 flex flex-col items-center justify-center'>
-                    <h1>Loading...</h1>
+                    <h1>Refreshing Tasks Dashboard...</h1>
                 </div>
                     : <>
                         <div className='p-4 grid gap-7 lg:grid-cols-3'>
@@ -68,7 +76,7 @@ const TasksDashboard = () => {
                                 onChange={(e) => setTaskTitle(e.target.value)}
                                 type="text"
                                 placeholder="type to add new task..."
-                                className="px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+                                className="px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                             />
 
                             <button type="submit" className="px-3 ml-4 p-2 text-[#E1E1E1] bg-[#121212] rounded-md focus:bg-[#121212] focus:outline-none">Add Task</button>
