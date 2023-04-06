@@ -94,6 +94,7 @@ const TaskDetails = () => {
         // to trigger dashboard refresh we update isLoading
         // to trigger dashboard refresh we update isLoading
         updateIsLoading(true);
+        setloadingTaskDetails(true);
         const response = await axios.patch(`/tasks/${taskId}`, updatedTask);
         if (response.status === 200) {
           // Update
