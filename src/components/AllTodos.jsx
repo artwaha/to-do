@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { TodoContext } from "../containers/TodoContextProvider";
 import TodoItem from "./TodoItem";
+import SEO from "../containers/seo";
 
 const AllTodos = () => {
   // Context Variables
@@ -33,6 +34,7 @@ const AllTodos = () => {
 
   return (
     <div className="p-5 w-full max-w-screen-lg mx-auto">
+      <SEO title="All Tasks" description="Home Page. All tasks" />
       {loadingAllTasks ? (
         <div className="p-4 flex flex-col items-center justify-center">
           <h1>Loading all tasks...</h1>

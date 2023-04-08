@@ -1,4 +1,23 @@
 "proxy-server": "https://uninterested-ray-hoodie.cyclic.app",
 "proxy": "http://localhost:3001",
+"proxy": "http://localhost:9000",
 "start-nodemon": "nodemon ./bin/www",
 "proxy": "https://abdul-razak.cyclic.app"
+
+Deleted Codes: 
+1. Location: TaskDetails
+  // const handleSave = async () => {
+  //   try {
+  //     updateIsLoading(true);
+  //     const response = await axios.patch(`/tasks/${taskId}`, updatedTask);
+  //     if (response.status === 200) {
+  //       // Update
+  //       fetchData();
+  //       setEditMode(false);
+  //       setShowEditButton(true);
+  //       updateIsLoading(false);
+  //     }
+  //   } catch (error) {
+  //     alert(`Unable to Save (${error.response.data.message})`);
+  //   }
+  // };
