@@ -13,6 +13,7 @@ const TodoContextProvider = ({ children }) => {
 
   const updateIsLoading = (state) => {
     setIsLoading(state);
+    // setIsLoading((prevState) => state);
   };
 
   const contextValues = {

@@ -24,7 +24,7 @@ const TasksDashboard = () => {
       setDone(response.data.done);
       setTodo(response.data.todo);
       updateIsLoading(false);
-      // console.log("Success");
+      console.log("Success");
     } catch (error) {
       updateIsLoading(true);
       // TODO:Redirect to 404 Page
@@ -34,6 +34,7 @@ const TasksDashboard = () => {
 
   useEffect(() => {
     fetchData();
+    
   }, [fetchData]);
 
   const handleSubmit = async (e) => {
