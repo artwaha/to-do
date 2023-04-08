@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 const SEO = ({ title, description }) => {
   return (
     <Helmet>
-      <title>Todo Application | {title}</title>
+      <title>{title}</title>
       <meta name="description" content={`${description}`} />
     </Helmet>
   );
