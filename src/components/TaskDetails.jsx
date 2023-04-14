@@ -31,15 +31,13 @@ const TaskDetails = () => {
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`/tasks/${taskId}`);
-      console.log("Response: ", response.data);
-      // console.log("Collaborators: ", !response.data.collaborators.length);
+      // console.log("Response: ", response.data);
       //NOTE: populate updated task object with default data incase user chooses to edit but doesn't
       setUpdatedTask((prevState) => {
         return {
           ...prevState,
           isCompleted: response.data.isCompleted,
           title: response.data.title,
-          collaborators: response.data.collaborators,
           description: response.data.description,
         };
       });
@@ -74,21 +72,15 @@ const TaskDetails = () => {
 
   // // API call to Save edited Task
   const handleSave = async () => {
-    // NOTE: Before saving, check if user changed anything before doing API Call
-    // FIXME: See two state variables to compare physically
-    // FIXME: The status(boolean) comparison has bugs
-    console.log("Task: ", task);
+    // console.log("Task: ", task);
     console.log("updated task: ", updatedTask);
     try {
       if (
         task.title === updatedTask.title &&
         task.description === updatedTask.description &&
         task.isCompleted === updatedTask.isCompleted &&
-        task.owner._id === updatedTask.owner &&
-        task.collaborators.length === updatedTask.collaborators.length &&
-        task.collaborators.every(
-          (c, index) => c === updatedTask.collaborators[index]
-        )
+        task.owner === updatedTask.owner &&
+        !updatedTask.collaborators.length
       ) {
         // The two state variables have the same contents.
         alert("Nothing changed");
@@ -113,7 +105,6 @@ const TaskDetails = () => {
       alert(`Unable to Save (${error.response.data.message})`);
     }
   };
-
   // API Call to delete Task
   const handleDelete = async (e) => {
     try {
@@ -155,14 +146,14 @@ const TaskDetails = () => {
 
     setUpdatedTask({
       ...updatedTask,
-      collaborators: [...itemsToDelete, collaborator._id],
+      collaborators: [...itemsToDelete, collaborator.userId._id],
     });
-    setItemsToDelete([...itemsToDelete, collaborator._id]);
+    setItemsToDelete([...itemsToDelete, collaborator.userId._id]);
   };
 
   const handleUndo = (index, collaborator) => {
     setStrikedThroughIndexes(strikedThroughIndexes.filter((i) => i !== index));
-    let items = itemsToDelete.filter((id) => id !== collaborator._id);
+    let items = itemsToDelete.filter((id) => id !== collaborator.userId._id);
     setUpdatedTask({ ...updatedTask, collaborators: items });
     setItemsToDelete(items);
     setDisabledIndexes(disabledIndexes.filter((i) => i !== index));
@@ -293,7 +284,7 @@ const TaskDetails = () => {
                         : ""
                     }
                   >
-                    {collaborator.name}
+                    {collaborator.userId.name} | {collaborator.invitationStatus}
                   </h3>
                   {/* NOTE: icons */}
                   {!disabledIndexes.includes(index) && (
@@ -397,7 +388,16 @@ const TaskDetails = () => {
           {task.collaborators.length ? (
             task.collaborators.map((collaborator, index) => (
               <li className="py-1" key={index}>
-                {collaborator.name} | {collaborator.invitationStatus}
+                {collaborator.userId.name} (
+                <span
+                  className={`${
+                    collaborator.invitationStatus === "accepted"
+                      ? "text-violet-700"
+                      : "text-orange-700"
+                  }`}
+                >
+                  {collaborator.invitationStatus})
+                </span>
               </li>
             ))
           ) : (
