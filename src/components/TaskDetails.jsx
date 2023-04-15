@@ -169,8 +169,13 @@ const TaskDetails = () => {
       ) : (
         <>
           <div className="mb-2 p-2 flex">{actionButtons()}</div>
-          {!editMode ? viewModeForm() : editModeForm()}
-          {collaboratorsForm()}
+          {!editMode ? (
+            <>
+              {viewModeForm()} {collaboratorsForm()}
+            </>
+          ) : (
+            editModeForm()
+          )}
         </>
       )}
     </div>
@@ -180,40 +185,44 @@ const TaskDetails = () => {
 
   function collaboratorsForm() {
     return (
-      <form className="flex items-center mt-4 text-sm">
-        <input
-          type="email"
-          className="px-2 py-1 text-sm border border-gray-300 rounded-md"
-          onChange={(e) => console.log(e.target.value)}
-          placeholder="Enter email.."
-        />
-        <button
-          onClick={handleEdit}
-          className="flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-            />
-          </svg>
-          <span className="ml-1">Invite</span>
-        </button>
+      <form className="flex flex-col mt-4">
+        <h1 className=" text-xl">Invite Collaborators</h1>
+        <ol className="ml-4">
+          {task.usersToInvite.map((usr, index) => (
+            <li key={index} className="flex items-center mb-2">
+              <p>
+                {`${index + 1}. `} {usr.name}
+              </p>
+              <button
+                onClick={handleEdit}
+                className="flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                  />
+                </svg>
+                <span className="ml-1">Invite</span>
+              </button>
+            </li>
+          ))}
+        </ol>
       </form>
     );
   }
 
   function editModeForm() {
     return (
-      <form className="flex flex-col">
+      <form className="flex flex-col border-b">
         <div className="flex items-center mt-2">
           <h2
             className={`${
@@ -346,7 +355,7 @@ const TaskDetails = () => {
 
   function viewModeForm() {
     return (
-      <form>
+      <form className="border-b">
         <h1>
           <span
             className={`${
