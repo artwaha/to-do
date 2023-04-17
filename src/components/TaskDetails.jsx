@@ -159,6 +159,32 @@ const TaskDetails = () => {
     setDisabledIndexes(disabledIndexes.filter((i) => i !== index));
   };
 
+  const handleInviteCollaborator = async (userId) => {
+    try {
+      setloadingTaskDetails(true);
+      const response = await axios.post("/collaborators/new-collaborator", {
+        taskId: taskId,
+        userId: userId,
+      });
+
+      if (response.status === 200) {
+        console.log("Invitation Email sent");
+      }
+      fetchData();
+    } catch (error) {
+      console.log(
+        `Failed to invite collaborator - ${error.response.data.message}`
+      );
+    }
+  };
+  // const handleInviteCollaborator = async (userId) => {
+  //   try {
+  //     console.log("User ID: ", userId);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   return (
     <div className="p-5 w-full max-w-screen-lg mx-auto">
       <SEO title="Task Details" description="Task Details" />
@@ -185,44 +211,34 @@ const TaskDetails = () => {
 
   function collaboratorsForm() {
     return (
-      <form className="flex flex-col mt-4">
-        <h1 className=" text-xl">Invite Collaborators</h1>
+      <div className="flex flex-col border-t mt-2 pt-2">
+        <h1 className=" text-lg font-semibold">Invite Collaborators:</h1>
         <ol className="ml-4">
-          {task.usersToInvite.map((usr, index) => (
-            <li key={index} className="flex items-center mb-2">
-              <p>
-                {`${index + 1}. `} {usr.name}
-              </p>
-              <button
-                onClick={handleEdit}
-                className="flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5"
+          {!task.usersToInvite.length ? (
+            <h1>No Collaborators to Invite</h1>
+          ) : (
+            task.usersToInvite.map((usr, index) => (
+              <li key={index} className="flex items-center mb-2">
+                <p>
+                  {`${index + 1}. `} {usr.name}
+                </p>
+                <button
+                  onClick={() => handleInviteCollaborator(usr._id)}
+                  className="flex justify-center items-center text-green-700  px-1 underline rounded-md ml-2"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                  />
-                </svg>
-                <span className="ml-1">Invite</span>
-              </button>
-            </li>
-          ))}
+                  Invite
+                </button>
+              </li>
+            ))
+          )}
         </ol>
-      </form>
+      </div>
     );
   }
 
   function editModeForm() {
     return (
-      <form className="flex flex-col border-b">
+      <form className="flex flex-col">
         <div className="flex items-center mt-2">
           <h2
             className={`${
@@ -355,7 +371,7 @@ const TaskDetails = () => {
 
   function viewModeForm() {
     return (
-      <form className="border-b">
+      <form>
         <h1>
           <span
             className={`${
