@@ -24,7 +24,7 @@ const TasksDashboard = () => {
       setDone(response.data.done);
       setTodo(response.data.todo);
       updateIsLoading(false);
-      console.log("Success");
+      // console.log("Success");
     } catch (error) {
       updateIsLoading(true);
       // TODO:Redirect to 404 Page
@@ -34,7 +34,6 @@ const TasksDashboard = () => {
 
   useEffect(() => {
     fetchData();
-    
   }, [fetchData]);
 
   const handleSubmit = async (e) => {
@@ -52,7 +51,9 @@ const TasksDashboard = () => {
       fetchData();
       navigate(`/tasks/${response.data._id}`);
     } catch (error) {
-      alert(`Unable to Add new Task (${error.response.data.message})`);
+      alert(
+        `Task Dashboard Unable to Add new Task (${error.response.data.message})`
+      );
     }
   };
 

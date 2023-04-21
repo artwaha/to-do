@@ -20,11 +20,11 @@ const TaskDetails = () => {
   const [strikedThroughIndexes, setStrikedThroughIndexes] = useState([]);
   const [disabledIndexes, setDisabledIndexes] = useState([]);
   const [loadingTaskDetails, setloadingTaskDetails] = useState(true);
+  const [isTaskOwner, setIsTaskOwner] = useState(false);
   const [updatedTask, setUpdatedTask] = useState({
     title: "",
     description: "",
     isCompleted: false,
-    owner: userId,
     collaborators: [],
   });
 
@@ -33,6 +33,11 @@ const TaskDetails = () => {
       const response = await axios.get(`/tasks/${taskId}`);
       // console.log("Response: ", response.data);
       //NOTE: populate updated task object with default data incase user chooses to edit but doesn't
+
+      if (response.data.owner._id === userId) {
+        setIsTaskOwner(true);
+      }
+
       setUpdatedTask((prevState) => {
         return {
           ...prevState,
@@ -50,7 +55,7 @@ const TaskDetails = () => {
         `Failed to load Task details (${error.response.data.message})`
       );
     }
-  }, [taskId]);
+  }, [taskId, userId]);
 
   //API Call to Fetch Task Details
   useEffect(() => {
@@ -73,13 +78,12 @@ const TaskDetails = () => {
   // // API call to Save edited Task
   const handleSave = async () => {
     // console.log("Task: ", task);
-    console.log("updated task: ", updatedTask);
+    // console.log("updated task: ", updatedTask);
     try {
       if (
         task.title === updatedTask.title &&
         task.description === updatedTask.description &&
         task.isCompleted === updatedTask.isCompleted &&
-        task.owner === updatedTask.owner &&
         !updatedTask.collaborators.length
       ) {
         // The two state variables have the same contents.
@@ -167,9 +171,8 @@ const TaskDetails = () => {
         userId: userId,
       });
 
-      if (response.status === 200) {
-        console.log("Invitation Email sent");
-      }
+      console.log(response.data.message);
+
       fetchData();
     } catch (error) {
       console.log(
@@ -177,13 +180,6 @@ const TaskDetails = () => {
       );
     }
   };
-  // const handleInviteCollaborator = async (userId) => {
-  //   try {
-  //     console.log("User ID: ", userId);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   return (
     <div className="p-5 w-full max-w-screen-lg mx-auto">
@@ -194,10 +190,11 @@ const TaskDetails = () => {
         </div>
       ) : (
         <>
-          <div className="mb-2 p-2 flex">{actionButtons()}</div>
+          <div className="mb-2 p-2 flex items-center">{actionButtons()}</div>
           {!editMode ? (
             <>
-              {viewModeForm()} {collaboratorsForm()}
+              {viewModeForm()}
+              {isTaskOwner && collaboratorsForm()}
             </>
           ) : (
             editModeForm()
@@ -289,82 +286,88 @@ const TaskDetails = () => {
             <option value={false}>Pending</option>
           </select>
         </div>
-        <h2
-          className={`${
-            task.isCompleted ? "text-lg text-green-700" : "text-[#F44250]"
-          } mr-2 font-sans mt-2`}
-        >
-          Collaborators:
-        </h2>
-        <ol className="list-decimal list-inside ml-4">
-          {task.collaborators.length ? (
-            task.collaborators.map((collaborator, index) => {
-              return (
-                <li key={index} className="flex items-center mt-2 py-1">
-                  {/* NOTE: Text */}
-                  <h3
-                    className={
-                      strikedThroughIndexes.includes(index)
-                        ? "line-through"
-                        : ""
-                    }
-                  >
-                    {collaborator.userId.name} | {collaborator.invitationStatus}
-                  </h3>
-                  {/* NOTE: icons */}
-                  {!disabledIndexes.includes(index) && (
-                    <button
-                      className="text-white bg-[#F44250] rounded-md ml-3 p-1"
-                      onClick={() => {
-                        handleRemoveCollaborator(index, collaborator);
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="w-4 h-4 "
+        {/* NOTE: Only view this if task onwer  */}
+        {isTaskOwner && (
+          <>
+            <h2
+              className={`${
+                task.isCompleted ? "text-lg text-green-700" : "text-[#F44250]"
+              } mr-2 font-sans mt-2`}
+            >
+              Collaborators:
+            </h2>
+            <ol className="list-decimal list-inside ml-4">
+              {task.collaborators.length ? (
+                task.collaborators.map((collaborator, index) => {
+                  return (
+                    <li key={index} className="flex items-center mt-2 py-1">
+                      {/* NOTE: Text */}
+                      <h3
+                        className={
+                          strikedThroughIndexes.includes(index)
+                            ? "line-through"
+                            : ""
+                        }
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                  {strikedThroughIndexes.includes(index) && (
-                    <button
-                      onClick={() => {
-                        handleUndo(index, collaborator);
-                      }}
-                      className="text-white bg-[#F44250] rounded-md ml-3 p-1"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="w-4 h-4 "
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                </li>
-              );
-            })
-          ) : (
-            <h1>No Collaborators for this task!</h1>
-          )}
-        </ol>
+                        {collaborator.userId.name} |{" "}
+                        {collaborator.invitationStatus}
+                      </h3>
+                      {/* NOTE: icons */}
+                      {!disabledIndexes.includes(index) && (
+                        <button
+                          className="text-white bg-[#F44250] rounded-md ml-3 p-1"
+                          onClick={() => {
+                            handleRemoveCollaborator(index, collaborator);
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="w-4 h-4 "
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      )}
+                      {strikedThroughIndexes.includes(index) && (
+                        <button
+                          onClick={() => {
+                            handleUndo(index, collaborator);
+                          }}
+                          className="text-white bg-[#F44250] rounded-md ml-3 p-1"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="w-4 h-4 "
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"
+                            />
+                          </svg>
+                        </button>
+                      )}
+                    </li>
+                  );
+                })
+              ) : (
+                <h1>No Collaborators for this task!</h1>
+              )}
+            </ol>
+          </>
+        )}
       </form>
     );
   }
@@ -372,6 +375,18 @@ const TaskDetails = () => {
   function viewModeForm() {
     return (
       <form>
+        {!isTaskOwner && (
+          <h1>
+            <span
+              className={`${
+                task.isCompleted ? "text-lg text-green-700" : "text-[#F44250]"
+              } mr-2 font-sans`}
+            >
+              Owner:{" "}
+            </span>
+            <span className="font-light mb-2">{task.owner.name}</span>
+          </h1>
+        )}
         <h1>
           <span
             className={`${

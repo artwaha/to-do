@@ -41,11 +41,11 @@ const Done = () => {
         <div className="p-4 flex flex-col items-center justify-center">
           <h1>Loading done tasks...</h1>
         </div>
-      ) : doneTasks.length === 0 ? (
+      ) : !doneTasks.length ? (
         <h1>No Done tasks..</h1>
       ) : (
         doneTasks.map((task, index) => {
-          return <TodoItem key={index} task={task} />;
+          return <TodoItem key={index} task={task} index={index + 1} />;
         })
       )}
     </div>

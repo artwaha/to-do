@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const TodoItem = ({ task }) => {
+const TodoItem = ({ task, index }) => {
   // Context variables
   const navigate = useNavigate();
 
@@ -10,19 +10,9 @@ const TodoItem = ({ task }) => {
     navigate(`/tasks/${task._id}`);
   };
 
-  const handleCheckBox = (e) => {
-    console.log(e.target.checked);
-  };
-
   return (
     <form className="py-2 mb-2 px-4 flex justify-between items-center border border-gray-300 rounded-md">
-      <input
-        onChange={handleCheckBox}
-        type="checkbox"
-        name=""
-        id=""
-        defaultChecked={task.isCompleted}
-      />
+      <p className="text-[#20232A] font-mono font-extrabold">{index}</p>
       <p className="text-[#20232A] font-mono font-extrabold">{task.title}</p>
       <div className="flex justify-center items-center">
         <button onClick={handleView}>
@@ -47,3 +37,7 @@ const TodoItem = ({ task }) => {
 };
 
 export default TodoItem;
+
+// className={`py-2 mb-2 px-4 flex justify-between items-center border border-gray-300 rounded-md ${
+//   task.isCompleted ? "bg-[#6AD767]" : "bg-[#F44250]"
+// }`}
