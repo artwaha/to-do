@@ -44,7 +44,7 @@ const AllTodos = () => {
         <h1>No tasks to show...</h1>
       ) : (
         allTasks.map((task, index) => {
-          return <TodoItem key={index} task={task} index={index + 1} />;
+          return <TodoItem key={index} task={task} />;
         })
       )}
     </div>

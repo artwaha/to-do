@@ -43,7 +43,7 @@ const Todo = () => {
         <h1>No Todo tasks..</h1>
       ) : (
         todoTasks.map((task, index) => {
-          return <TodoItem key={index} task={task} index={index + 1}/>;
+          return <TodoItem key={index} task={task} />;
         })
       )}
     </div>

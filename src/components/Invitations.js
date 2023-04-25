@@ -6,7 +6,7 @@ import { TodoContext } from "../containers/TodoContextProvider";
 import { useCallback } from "react";
 
 const Invitations = () => {
-  const { userId } = useContext(TodoContext);
+  const { userId, updateIsLoading } = useContext(TodoContext);
   const [invitations, setInvitations] = useState([]);
   const [isLoadingInvitations, setIsLoadingInvitations] = useState(true);
 
@@ -31,6 +31,7 @@ const Invitations = () => {
 
   const handleAccept = async (invite) => {
     try {
+      updateIsLoading(true);
       setIsLoadingInvitations(true);
       await axios.patch("/collaborators/invitation", {
         taskId: invite.taskId._id,
@@ -39,6 +40,7 @@ const Invitations = () => {
       });
 
       fetchData();
+      updateIsLoading(false);
     } catch (error) {
       console.log(`Unable to Accept - ${error.response.data.message}`);
     }
@@ -46,6 +48,7 @@ const Invitations = () => {
 
   const handleReject = async (invite) => {
     try {
+      updateIsLoading(true);
       setIsLoadingInvitations(true);
       await axios.patch("/collaborators/invitation", {
         taskId: invite.taskId._id,
@@ -53,6 +56,7 @@ const Invitations = () => {
         invitationStatus: "rejected",
       });
       fetchData();
+      updateIsLoading(false);
     } catch (error) {
       // console.log(`Unable to Accept - ${error.response.data.message}`);
       console.log(error);
@@ -77,7 +81,6 @@ const Invitations = () => {
         invitations.map((invitation, index) => (
           <InvitationItem
             key={index}
-            index={index + 1}
             invitation={invitation}
             handleAccept={handleAccept}
             handleReject={handleReject}

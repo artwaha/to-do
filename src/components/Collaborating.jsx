@@ -48,7 +48,7 @@ const Collaborating = () => {
         </div>
       ) : (
         collaboratingTasks.map((task, index) => (
-          <TodoItem key={index} task={task} index={index + 1} />
+          <TodoItem key={index} task={task} />
         ))
       )}
     </div>

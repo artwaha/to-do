@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TodoContext } from "../containers/TodoContextProvider";
 import SEO from "../containers/seo";
+import moment from "moment/moment";
 
 const TaskDetails = () => {
   // Context Variable
@@ -96,7 +97,11 @@ const TaskDetails = () => {
         // to trigger dashboard refresh we update isLoading
         updateIsLoading(true);
         setloadingTaskDetails(true);
-        const response = await axios.patch(`/tasks/${taskId}`, updatedTask);
+        const response = await axios.patch(`/tasks/${taskId}`, {
+          ...updatedTask,
+          lastUpdated: Date.now(),
+          updatedby: userId,
+        });
         if (response.status === 200) {
           // Update
           fetchData();
@@ -129,6 +134,11 @@ const TaskDetails = () => {
       ...updatedTask,
       [name]: value,
     });
+  };
+
+  const handleCancel = () => {
+    setShowEditButton(true);
+    setEditMode(false);
   };
 
   const handleEdit = () => {
@@ -375,6 +385,11 @@ const TaskDetails = () => {
   function viewModeForm() {
     return (
       <form>
+        {task.lastUpdated && task.updatedby && (
+          <small className="text-gray-500 italic">{`Last updated on ${moment(
+            task.lastUpdated
+          ).format("MMMM Do YYYY, H:mm")} by ${task.updatedby.name}.`}</small>
+        )}
         {!isTaskOwner && (
           <h1>
             <span
@@ -451,24 +466,44 @@ const TaskDetails = () => {
   function actionButtons() {
     return (
       <div className="ml-auto flex items-center justify-center">
-        <button
-          className="flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2"
-          onClick={handleDelete}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="w-5 h-5"
+        {isTaskOwner && (
+          <button
+            className="flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2"
+            onClick={handleDelete}
           >
-            <path
-              fillRule="evenodd"
-              d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <span className="ml-1">delete</span>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span className="ml-1">delete</span>
+          </button>
+        )}
+
+        {!showEditButton && (
+          <button
+            className="flex justify-center items-center text-white bg-[#121212] px-2 py-1 rounded-md ml-2"
+            onClick={handleCancel}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-5 h-5"
+            >
+              <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+            </svg>
+
+            <span className="ml-1">cancel</span>
+          </button>
+        )}
 
         {/* NOTE: show edit button */}
         {showEditButton && (

@@ -14,6 +14,8 @@ const TasksDashboard = () => {
   const [done, setDone] = useState(0);
   const [todo, setTodo] = useState(0);
   const [allTasks, setAllTasks] = useState(0);
+  const [invitations, setInvitations] = useState(0);
+  const [collaborating, setCollaborating] = useState(0);
   const [taskTitle, setTaskTitle] = useState("");
 
   // Fetch Dashboard Data from REST API
@@ -23,6 +25,8 @@ const TasksDashboard = () => {
       setAllTasks(response.data.tasks);
       setDone(response.data.done);
       setTodo(response.data.todo);
+      setCollaborating(response.data.collaborating);
+      setInvitations(response.data.invitations);
       updateIsLoading(false);
       // console.log("Success");
     } catch (error) {
@@ -79,6 +83,20 @@ const TasksDashboard = () => {
             <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
               <h2 className="text-lg text-[#F44250]">Todo</h2>
               <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">{todo}</h1>
+            </div>
+          </div>
+          <div className="p-4 grid gap-7 lg:grid-cols-2">
+            <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
+              <h2 className="text-lg text-[#FFE545]">Collaborating</h2>
+              <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">
+                {collaborating}
+              </h1>
+            </div>
+            <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
+              <h2 className="text-lg text-[#2290F5]">Invitations</h2>
+              <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">
+                {invitations}
+              </h1>
             </div>
           </div>
           <form

@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const TodoItem = ({ task, index }) => {
+const TodoItem = ({ task }) => {
   // Context variables
   const navigate = useNavigate();
 
@@ -12,7 +12,11 @@ const TodoItem = ({ task, index }) => {
 
   return (
     <form className="py-2 mb-2 px-4 flex justify-between items-center border border-gray-300 rounded-md">
-      <p className="text-[#20232A] font-mono font-extrabold">{index}</p>
+      <div
+        className={`rounded-full w-3 h-3 ${
+          task.isCompleted ? "bg-[#6AD767]" : "bg-[#F44250]"
+        }`}
+      ></div>
       <p className="text-[#20232A] font-mono font-extrabold">{task.title}</p>
       <div className="flex justify-center items-center">
         <button onClick={handleView}>
@@ -37,7 +41,3 @@ const TodoItem = ({ task, index }) => {
 };
 
 export default TodoItem;
-
-// className={`py-2 mb-2 px-4 flex justify-between items-center border border-gray-300 rounded-md ${
-//   task.isCompleted ? "bg-[#6AD767]" : "bg-[#F44250]"
-// }`}

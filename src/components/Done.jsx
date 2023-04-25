@@ -45,7 +45,7 @@ const Done = () => {
         <h1>No Done tasks..</h1>
       ) : (
         doneTasks.map((task, index) => {
-          return <TodoItem key={index} task={task} index={index + 1} />;
+          return <TodoItem key={index} task={task} />;
         })
       )}
     </div>
