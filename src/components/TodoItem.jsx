@@ -14,7 +14,13 @@ const TodoItem = ({ task }) => {
     <form className="py-2 mb-2 px-4 flex justify-between items-center border border-gray-300 rounded-md">
       <div
         className={`rounded-full w-3 h-3 ${
-          task.isCompleted ? "bg-[#6AD767]" : "bg-[#F44250]"
+          task.isCompleted && !task.invitation && !task.collaborating
+            ? "bg-[#6AD767]"
+            : !task.isCompleted && !task.invitation && !task.collaborating
+            ? "bg-[#F44250]"
+            : task.collaborating
+            ? "bg-[#FFE545]"
+            : "bg-[#2290F5]"
         }`}
       ></div>
       <p className="text-[#20232A] font-mono font-extrabold">{task.title}</p>

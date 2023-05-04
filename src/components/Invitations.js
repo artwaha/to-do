@@ -81,6 +81,7 @@ const Invitations = () => {
         invitations.map((invitation, index) => (
           <InvitationItem
             key={index}
+            index={index + 1}
             invitation={invitation}
             handleAccept={handleAccept}
             handleReject={handleReject}

@@ -12,6 +12,7 @@ const TodoContextProvider = ({ children }) => {
 
   const [userId, setUserId] = useState(sholmes);
   const [isLoading, setIsLoading] = useState(true);
+  const [title, setTitle] = useState("");
 
   const updateUserId = (id) => {
     setUserId(id);
@@ -22,11 +23,17 @@ const TodoContextProvider = ({ children }) => {
     // setIsLoading((prevState) => state);
   };
 
+  const updateTitle = (newtitle) => {
+    setTitle(newtitle);
+  };
+
   const contextValues = {
+    title,
     userId,
     isLoading,
     updateUserId,
     updateIsLoading,
+    updateTitle,
   };
 
   return (

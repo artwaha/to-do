@@ -14,7 +14,7 @@ const InvitationItem = ({ index, invitation, handleAccept, handleReject }) => {
           <span className="font-sans">{invitation.taskId.owner.name}</span>
         </p>
         <p>
-          <span className="font-mono font-extrabold">Invitation Status:</span>
+          <span className="font-mono font-extrabold">Status:</span>
           <span className="font-sans">{invitation.invitationStatus}</span>
         </p>
       </div>

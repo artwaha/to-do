@@ -18,8 +18,10 @@ const Collaborating = () => {
         userId,
       });
 
-      const tasks = response.data.map((task) => task.taskId);
-      setcollaboratingTasks(tasks);
+      // const tasks = response.data.map((task) => task.taskId);
+      setcollaboratingTasks(response.data);
+
+      // console.log(response.data);
 
       setIsLoadingCollaboratingTasks(false);
     } catch (error) {

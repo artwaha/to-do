@@ -1,14 +1,24 @@
 import axios from "axios";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMatches, useNavigate } from "react-router-dom";
 import { TodoContext } from "../containers/TodoContextProvider";
 
 const TasksDashboard = () => {
   // Context Variables
-  const { userId, isLoading, updateIsLoading } = useContext(TodoContext);
+  const { userId, isLoading, updateIsLoading, updateTitle, title } =
+    useContext(TodoContext);
+
+  useEffect(() => {
+    updateTitle("All Tasks");
+
+    return () => {
+      updateTitle("");
+    };
+  }, [updateTitle]);
 
   // React router Variables
   const navigate = useNavigate();
+  const matches = useMatches();
 
   // State Variables
   const [done, setDone] = useState(0);
@@ -17,6 +27,35 @@ const TasksDashboard = () => {
   const [invitations, setInvitations] = useState(0);
   const [collaborating, setCollaborating] = useState(0);
   const [taskTitle, setTaskTitle] = useState("");
+
+  const getTitle = useCallback(() => {
+    switch (matches[1].pathname) {
+      case "/done":
+        updateTitle("Done");
+        break;
+      case "/todo":
+        updateTitle("Todo");
+        break;
+      case "/invitations":
+        updateTitle("Invitations");
+        break;
+      case "/collaborating":
+        updateTitle("Collaborating");
+        break;
+      case "/":
+        updateTitle("All Tasks");
+        break;
+
+      default:
+        updateTitle("Task Details");
+        break;
+    }
+  }, [matches, updateTitle]);
+
+  // To Update Title
+  useEffect(() => {
+    getTitle();
+  }, [getTitle]);
 
   // Fetch Dashboard Data from REST API
   const fetchData = useCallback(async () => {
@@ -61,8 +100,28 @@ const TasksDashboard = () => {
     }
   };
 
+  const handleNavigate = (route) => {
+    switch (route) {
+      case "done":
+        navigate("/done");
+        break;
+      case "todo":
+        navigate("/todo");
+        break;
+      case "collaborating":
+        navigate("/collaborating");
+        break;
+      case "invitations":
+        navigate("/invitations");
+        break;
+      default:
+        navigate("/");
+        break;
+    }
+  };
+
   return (
-    <div className="p-4 w-full max-w-screen-lg mx-auto border-b border-gray-500">
+    <div className="p-4 pb-1 w-full max-w-screen-lg mx-auto border-b border-gray-100">
       {isLoading ? (
         <div className="p-4 flex flex-col items-center justify-center">
           <h1>Refreshing Tasks Dashboard...</h1>
@@ -70,29 +129,44 @@ const TasksDashboard = () => {
       ) : (
         <>
           <div className="p-4 grid gap-7 lg:grid-cols-3">
-            <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
+            <div
+              onClick={() => handleNavigate("/")}
+              className="py-3 bg-[#121212] rounded shadow-sm text-center cursor-pointer hover:scale-105 ease-in duration-300"
+            >
               <h2 className="text-lg text-[#D83BD2]">All Tasks</h2>
               <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">
                 {allTasks}
               </h1>
             </div>
-            <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
+            <div
+              onClick={() => handleNavigate("done")}
+              className="py-3 bg-[#121212] rounded shadow-sm text-center cursor-pointer hover:scale-105 ease-in duration-300"
+            >
               <h2 className="text-lg text-[#6AD767]">Done</h2>
               <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">{done}</h1>
             </div>
-            <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
+            <div
+              onClick={() => handleNavigate("todo")}
+              className="py-3 bg-[#121212] rounded shadow-sm text-center cursor-pointer hover:scale-105 ease-in duration-300"
+            >
               <h2 className="text-lg text-[#F44250]">Todo</h2>
               <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">{todo}</h1>
             </div>
           </div>
           <div className="p-4 grid gap-7 lg:grid-cols-2">
-            <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
+            <div
+              onClick={() => handleNavigate("collaborating")}
+              className="py-3 bg-[#121212] rounded shadow-sm text-center cursor-pointer hover:scale-105 ease-in duration-300"
+            >
               <h2 className="text-lg text-[#FFE545]">Collaborating</h2>
               <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">
                 {collaborating}
               </h1>
             </div>
-            <div className="py-3 bg-[#121212] rounded shadow-sm text-center">
+            <div
+              onClick={() => handleNavigate("invitations")}
+              className="py-3 bg-[#121212] rounded shadow-sm text-center cursor-pointer hover:scale-105 ease-in duration-300"
+            >
               <h2 className="text-lg text-[#2290F5]">Invitations</h2>
               <h1 className="text-3xl font-bold text-[#E1E1E1] pt-1">
                 {invitations}
@@ -117,6 +191,7 @@ const TasksDashboard = () => {
               Add Task
             </button>
           </form>
+          <h1 className="text-xl font-bold font-sans text-cyan-800">{title}</h1>
         </>
       )}
     </div>
