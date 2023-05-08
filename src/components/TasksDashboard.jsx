@@ -30,19 +30,19 @@ const TasksDashboard = () => {
 
   const getTitle = useCallback(() => {
     switch (matches[1].pathname) {
-      case "/done":
+      case "/tasks/done":
         updateTitle("Done");
         break;
-      case "/todo":
+      case "/tasks/todo":
         updateTitle("Todo");
         break;
-      case "/invitations":
+      case "/tasks/invitations":
         updateTitle("Invitations");
         break;
-      case "/collaborating":
+      case "/tasks/collaborating":
         updateTitle("Collaborating");
         break;
-      case "/":
+      case "/tasks/":
         updateTitle("All Tasks");
         break;
 
@@ -103,19 +103,19 @@ const TasksDashboard = () => {
   const handleNavigate = (route) => {
     switch (route) {
       case "done":
-        navigate("/done");
+        navigate("/tasks/done");
         break;
       case "todo":
-        navigate("/todo");
+        navigate("/tasks/todo");
         break;
       case "collaborating":
-        navigate("/collaborating");
+        navigate("/tasks/collaborating");
         break;
       case "invitations":
-        navigate("/invitations");
+        navigate("/tasks/invitations");
         break;
       default:
-        navigate("/");
+        navigate("/tasks");
         break;
     }
   };

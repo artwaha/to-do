@@ -121,7 +121,7 @@ const TaskDetails = () => {
       const response = await axios.delete(`/tasks/${taskId}`);
       if (response.status === 200) {
         updateIsLoading(false);
-        navigate(`/`);
+        navigate(`/tasks`);
       }
     } catch (error) {
       alert(`Unable to delete task (${error.response.data.message})`);

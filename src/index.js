@@ -11,12 +11,20 @@ import Todo from "./components/Todo";
 import TaskDetails from "./components/TaskDetails";
 import Collaborating from "./components/Collaborating";
 import Invitations from "./components/Invitations";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import { Navigate } from "react-router-dom";
+import TodoContextProvider from "./containers/TodoContextProvider";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Navigate to="/login" />,
     errorElement: <ErrorPage />,
+  },
+  {
+    path: "/tasks",
+    element: <App />,
     children: [
       {
         index: true,
@@ -39,16 +47,26 @@ const router = createBrowserRouter([
         element: <Invitations />,
       },
       {
-        path: "tasks/:taskId",
+        path: ":taskId",
         element: <TaskDetails />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <RouterProvider router={router} />
+  <TodoContextProvider>
+    <RouterProvider router={router} />
+  </TodoContextProvider>
   // <React.StrictMode>
   // </React.StrictMode>
 );

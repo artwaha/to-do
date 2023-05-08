@@ -12,6 +12,7 @@ const TodoContextProvider = ({ children }) => {
 
   const [userId, setUserId] = useState(sholmes);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [title, setTitle] = useState("");
 
   const updateUserId = (id) => {
@@ -20,17 +21,23 @@ const TodoContextProvider = ({ children }) => {
 
   const updateIsLoading = (state) => {
     setIsLoading(state);
-    // setIsLoading((prevState) => state);
   };
 
   const updateTitle = (newtitle) => {
     setTitle(newtitle);
   };
 
+  const updateIsLoggedIn = (state) => {
+    setIsLoggedIn(state);
+  };
+
   const contextValues = {
     title,
     userId,
     isLoading,
+    isLoggedIn,
+    setIsLoggedIn,
+    updateIsLoggedIn,
     updateUserId,
     updateIsLoading,
     updateTitle,

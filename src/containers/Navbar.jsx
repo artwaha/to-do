@@ -1,8 +1,18 @@
 import { Fragment } from "react";
 import { Menu, Transition, Disclosure } from "@headlessui/react";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { TodoContext } from "./TodoContextProvider";
+import { useEffect } from "react";
 
 export default function NavbarDropdown() {
+  const { isLoggedIn } = useContext(TodoContext);
+
+  // useEffect(() => {
+  //   console.log("Running");
+  //   console.log(isLoggedIn);
+  // }, [isLoggedIn]);
+
   const navigation = [
     {
       title: "Sherlock Holmes",
@@ -23,7 +33,7 @@ export default function NavbarDropdown() {
               <>
                 <div className="flex flex-wrap items-center justify-between w-full lg:w-auto">
                   <Link
-                    to="/"
+                    to="/tasks"
                     className="text-transparent bg-clip-text bg-gradient-to-r from-[#20232A] to-indigo-500 flex font-extrabold items-center space-x-2 text-2xl text-indigo-500 "
                   >
                     Logo
@@ -64,11 +74,13 @@ export default function NavbarDropdown() {
           </Disclosure>
 
           {/* menu  */}
-          <div className="hidden text-center lg:flex lg:items-center">
-            <ul className="items-center justify-end flex-1 pt-6 lg:pt-0 list-reset lg:flex">
-              <NavMenu navigation={navigation} />
-            </ul>
-          </div>
+          {
+            <div className="hidden text-center lg:flex lg:items-center">
+              <ul className="items-center justify-end flex-1 pt-6 lg:pt-0 list-reset lg:flex">
+                <NavMenu navigation={navigation} />
+              </ul>
+            </div>
+          }
         </nav>
       </div>
     </>
