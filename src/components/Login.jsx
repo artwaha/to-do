@@ -1,22 +1,31 @@
-import React, { useState } from "react";
-import SEO from "../containers/seo";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "../containers/Layout";
-import { useNavigate } from "react-router-dom";
+import { TodoContext } from "../containers/TodoContextProvider";
+import SEO from "../containers/seo";
+import { userService } from "../services/userService";
 
 const Login = () => {
-  // const { isLoggedIn, setIsLoggedIn } = useContext(TodoContext);
+  const { setloggedInUser } = useContext(TodoContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    navigate("/tasks");
-    console.table(email, password);
-    // updateIsLoggedIn(true);
-    // setIsLoggedIn(true);
-    // console.table(setIsLoggedIn);
+  const handleLogin = async () => {
+    try {
+      const response = await userService.login(email, password);
+      setError("");
+
+      // Update Context Variable
+      setloggedInUser(response.token);
+
+      navigate("/tasks");
+    } catch (err) {
+      setError(err);
+      alert(err);
+    }
   };
 
   const handleInputChange = (event) => {

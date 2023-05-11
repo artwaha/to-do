@@ -4,16 +4,22 @@ export const TodoContext = createContext();
 
 const TodoContextProvider = ({ children }) => {
   // const [userId, setUserId] = useState("63f7c47c595aab4eb016513o");
-  const jwick = "63f866d159b75af7fa28231d";
-  const jbourne = "63f844a3e4230b11711b97f4";
-  const jbond = "63f7c47c595aab4eb0165136";
+  // const jwick = "63f866d159b75af7fa28231d";
+  // const jbourne = "63f844a3e4230b11711b97f4";
+  // const jbond = "63f7c47c595aab4eb0165136";
+  // const ehunt = "643d3a951d4186c3866d9b16";
   const sholmes = "63f7c47c595aab4eb0165135";
-  const ehunt = "643d3a951d4186c3866d9b16";
 
   const [userId, setUserId] = useState(sholmes);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [title, setTitle] = useState("");
+  const [loggedInUser, setloggedInUser] = useState({
+    userId: "",
+    name: "",
+    username: "",
+    email: "",
+  });
 
   const updateUserId = (id) => {
     setUserId(id);
@@ -36,6 +42,8 @@ const TodoContextProvider = ({ children }) => {
     userId,
     isLoading,
     isLoggedIn,
+    loggedInUser,
+    setloggedInUser,
     setIsLoggedIn,
     updateIsLoggedIn,
     updateUserId,

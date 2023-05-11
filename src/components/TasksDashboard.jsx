@@ -5,7 +5,7 @@ import { TodoContext } from "../containers/TodoContextProvider";
 
 const TasksDashboard = () => {
   // Context Variables
-  const { userId, isLoading, updateIsLoading, updateTitle, title } =
+  const { userId,loggedInUser, isLoading, updateIsLoading, updateTitle, title } =
     useContext(TodoContext);
 
   useEffect(() => {
@@ -93,6 +93,7 @@ const TasksDashboard = () => {
       // Refresh the dashboard
       fetchData();
       navigate(`/tasks/${response.data._id}`);
+      console.log("User: ", loggedInUser);
     } catch (error) {
       alert(
         `Task Dashboard Unable to Add new Task (${error.response.data.message})`

@@ -25,6 +25,7 @@ const AllTodos = () => {
   }, [userId]);
 
   useEffect(() => {
+    
     fetchData();
     // NOTE: Watch for the behaviour of this return function if it wont misbehave
     // Making sure we reset the default state of Loading all tasks when the component unmounts
